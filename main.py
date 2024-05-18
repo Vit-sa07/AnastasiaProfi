@@ -317,7 +317,7 @@ X_train_scaled = scaler.fit_transform(X_train[:1000])
 X_test_scaled = scaler.transform(X_test)
 
 # Создаем и обучаем модели Lasso и Ridge с кросс-валидацией, используя параллельную обработку
-lasso = LassoCV(alphas=alphas, cv=5, max_iter=10000, tol=1e-3, n_jobs=-1).fit(X_train_scaled, y_train[:1000])
+lasso = LassoCV(alphas=alphas, cv=5, max_iter=20000, tol=1e-4, n_jobs=-1).fit(X_train_scaled, y_train[:1000])
 ridge = RidgeCV(alphas=alphas, cv=5).fit(X_train_scaled, y_train[:1000])
 
 # Делаем прогнозы на обучающей и контрольной выборках для моделей Lasso и Ridge
