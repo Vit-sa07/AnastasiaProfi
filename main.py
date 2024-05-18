@@ -317,7 +317,7 @@ X_train_scaled = scaler.fit_transform(X_train[:1000])
 X_test_scaled = scaler.transform(X_test)
 
 # Создаем и обучаем модели Lasso и Ridge с кросс-валидацией, используя параллельную обработку
-lasso = LassoCV(alphas=alphas, cv=5, max_iter=20000, tol=1e-4, n_jobs=-1).fit(X_train_scaled, y_train[:1000])
+lasso = LassoCV(alphas=alphas, cv=5, max_iter=200000, n_jobs=-1).fit(X_train_scaled, y_train[:1000])
 ridge = RidgeCV(alphas=alphas, cv=5).fit(X_train_scaled, y_train[:1000])
 
 # Делаем прогнозы на обучающей и контрольной выборках для моделей Lasso и Ridge
@@ -336,11 +336,12 @@ train_mse_ridge = mean_squared_error(y_train[:1000], y_train_pred_ridge)
 test_mse_ridge = mean_squared_error(y_test, y_test_pred_ridge)
 train_r2_ridge = r2_score(y_train[:1000], y_train_pred_ridge)
 test_r2_ridge = r2_score(y_test, y_test_pred_ridge)
+
 print('Задание 18')
-print(
-    f"Регрессия Лассо:\nTrain MSE: {train_mse_lasso}, Test MSE: {test_mse_lasso}\nTrain R2: {train_r2_lasso}, Test R2: {test_r2_lasso}")
-print(
-    f"Ridge Регрессия:\nTrain MSE: {train_mse_ridge}, Test MSE: {test_mse_ridge}\nTrain R2: {train_r2_ridge}, Test R2: {test_r2_ridge}")
+print(f"Регрессия Лассо:\nTrain MSE: {train_mse_lasso}, Test MSE: {test_mse_lasso}\nTrain R2: {train_r2_lasso}, Test R2: {test_r2_lasso}")
+print(f"Ridge Регрессия:\nTrain MSE: {train_mse_ridge}, Test MSE: {test_mse_ridge}\nTrain R2: {train_r2_ridge}, Test R2: {test_r2_ridge}")
+
 write_results('Задание 18')
 write_results(f"Регрессия Лассо:\nTrain MSE: {train_mse_lasso}, Test MSE: {test_mse_lasso}\nTrain R2: {train_r2_lasso}, Test R2: {test_r2_lasso}")
 write_results(f"Ridge Регрессия:\nTrain MSE: {train_mse_ridge}, Test MSE: {test_mse_ridge}\nTrain R2: {train_r2_ridge}, Test R2: {test_r2_ridge}")
+
