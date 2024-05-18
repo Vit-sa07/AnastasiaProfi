@@ -182,9 +182,23 @@ X = df.drop(columns=['DepDelay'])
 
 # 13. Преобразуйте каждый признак из указанного в пару новых признаков FeatureName_Hour, FeatureName_Minute.
 for col in ['DepTime', 'CRSDepTime', 'ArrTime', 'CRSArrTime']:
-    df[col + '_Hour'] = df[col] // 100
-    df[col + '_Minute'] = df[col] % 100
-    df = df.drop(columns=[col])
+    if col in df.columns:
+        df[col + '_Hour'] = df[col] // 100
+        df[col + '_Minute'] = df[col] % 100
+        df = df.drop(columns=[col])
+    else:
+        print(f"Column {col} not found in DataFrame")
+        write_results(f"Column {col} not found in DataFrame")
+
+# Вывод результатов для проверки
+print('Задание 13')
+for col in ['DepTime_Hour', 'DepTime_Minute', 'CRSDepTime_Hour', 'CRSDepTime_Minute', 'ArrTime_Hour', 'ArrTime_Minute', 'CRSArrTime_Hour', 'CRSArrTime_Minute']:
+    if col in df.columns:
+        print(f"Столбец {col} успешно добавлен в DataFrame.")
+        write_results(f"Столбец {col} успешно добавлен в DataFrame.")
+    else:
+        print(f"Столбец {col} отсутствует в DataFrame.")
+        write_results(f"Столбец {col} отсутствует в DataFrame.")
 
 # Задание 14. Изучите описание датасета и исключите признаки, сильно коррелирующие с ответами. Исключите признаки TailNum и Year.
 # Сначала исключим категориальные переменные
