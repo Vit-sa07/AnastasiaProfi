@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -18,10 +20,17 @@ def max_element(arr):
     candidates = arr[valid_indices + 1]  # берем элементы, стоящие после нулевых
     return np.max(candidates)  # возвращаем максимальный из них
 
+# Функция для записи результатов в файл
+def write_results(text):
+    with open("results.txt", "a", encoding="utf-8") as f:
+        f.write(text + "\n")
 
 # Пример использования:
 x = np.array([6, 2, 0, 3, 0, 0, 5, 7, 0])
+print('Задание 1')
 print(max_element(x))
+write_results('Задание 1')
+write_results(f"Результат: {max_element(x)}")
 
 
 # 2. Реализуйте функцию, принимающую на вход матрицу и некоторое число и возвращающую ближайший к числу элемент матрицы.
@@ -35,7 +44,10 @@ def nearest_value(X, v):
 # Пример использования:
 X = np.arange(0, 10).reshape((2, 5))
 v = 3.6
+print('Задание 2')
 print(nearest_value(X, v))
+write_results('Задание 2')
+write_results(f"Результат: {nearest_value(X, v)}")
 
 
 # 3. Реализуйте функцию scale(X), которая принимает на вход матрицу и масштабирует каждый ее столбец.
@@ -48,8 +60,10 @@ def scale(X):
 
 # Пример использования:
 X = np.random.randint(1, 10, size=(5, 3))
+print('Задание 3')
 print(scale(X))
-
+write_results('Задание 3')
+write_results(f"Результат:\n{scale(X)}")
 
 # 4. Реализуйте функцию, которая для заданной матрицы находит определитель, след, наименьший и наибольший элементы, норму Фробениуса, собственные числа и обратную матрицу.
 def get_stats(X):
@@ -70,7 +84,10 @@ def get_stats(X):
 
 # Пример использования:
 X = np.random.normal(10, 1, (3, 3))
+print('Задание 4')
 print(get_stats(X))
+write_results('Задание 4')
+write_results(f"Результат:\n{get_stats(X)}")
 
 # 5. Повторите 100 раз следующий эксперимент: сгенерируйте две матрицы размера 10×10 из стандартного нормального распределения, перемножьте их и найдите максимальный элемент.
 max_elements = []
@@ -82,48 +99,80 @@ for exp_num in range(100):
 
 mean_max_element = np.mean(max_elements)
 quantile_95 = np.percentile(max_elements, 95)
+print('Задание 5')
 print(f"Среднее значение максимальных элементов: {mean_max_element}")
 print(f"95-процентная квантиль: {quantile_95}")
+write_results('Задание 5')
+write_results(f"Среднее значение максимальных элементов: {mean_max_element}")
+write_results(f"95-процентная квантиль: {quantile_95}")
 
 # 6. Какая из причин отмены рейса (CancellationCode) была самой частой?
 df = pd.read_csv('2008.csv')
 most_common_cancellation = df['CancellationCode'].value_counts().idxmax()
+print('Задание 6')
 print(f"Самая частая причина отмены рейса: {most_common_cancellation}")
+write_results('Задание 6')
+write_results(f"Самая частая причина отмены рейса: {most_common_cancellation}")
 
 # 7. Найдите среднее, минимальное и максимальное расстояние, пройденное самолетом.
 mean_distance = df['Distance'].mean()
 min_distance = df['Distance'].min()
 max_distance = df['Distance'].max()
+print('Задание 7')
 print(
     f"Среднее расстояние: {mean_distance}, Минимальное расстояние: {min_distance}, Максимальное расстояние: {max_distance}")
+write_results('Задание 7')
+write_results(f"Среднее расстояние: {mean_distance}, Минимальное расстояние: {min_distance}, Максимальное расстояние: {max_distance}")
 
 # 8. Не выглядит ли подозрительным минимальное пройденное расстояние? В какие дни и на каких рейсах оно было? Какое расстояние было пройдено этими же рейсами в другие дни?
+write_results('Задание 8')
 
-# Используем имеющиеся столбцы для анализа подозрительных рейсов
 suspicious_flights = df[df['Distance'] == min_distance]
-print(
-    suspicious_flights[['Year', 'Month', 'DayofMonth', 'FlightNum', 'Distance', 'Origin', 'Dest', 'CancellationCode']])
+write_results("Подозрительные рейсы:\n" + suspicious_flights[['Year', 'Month', 'DayofMonth', 'FlightNum', 'Distance', 'Origin', 'Dest']].to_string())
+
+# Найдем расстояние, пройденное этими же рейсами в другие дни
+other_days_flights = df[(df['FlightNum'].isin(suspicious_flights['FlightNum'])) &
+                        (~df['DayofMonth'].isin(suspicious_flights['DayofMonth']))]
+
+# Разделение по номерам рейсов и запись в файл
+for flight_num in suspicious_flights['FlightNum'].unique():
+    same_flight_other_days = other_days_flights[other_days_flights['FlightNum'] == flight_num]
+    write_results(f"Рейс номер {flight_num} в другие дни:\n" + same_flight_other_days[['Year', 'Month', 'DayofMonth', 'FlightNum', 'Distance', 'Origin', 'Dest']].to_string())
 
 # 9. Из какого аэропорта было произведено больше всего вылетов? В каком городе он находится?
+print('Задание 9')
 most_departures = df['Origin'].value_counts().idxmax()
 print(f"Аэропорт с наибольшим количеством вылетов: {most_departures}")
+write_results('Задание 9')
+write_results(f"Аэропорт с наибольшим количеством вылетов: {most_departures}")
 
 # 10. Найдите для каждого аэропорта среднее время полета (AirTime) по всем вылетевшим из него рейсам. Какой аэропорт имеет наибольшее значение этого показателя?
+print('Задание 10')
 mean_airtime_per_airport = df.groupby('Origin')['AirTime'].mean().idxmax()
 print(f"Аэропорт с наибольшим средним временем полета: {mean_airtime_per_airport}")
+write_results('Задание 10')
+write_results(f"Аэропорт с наибольшим средним временем полета: {mean_airtime_per_airport}")
 
 # 11. Найдите аэропорт, у которого наибольшая доля задержанных (DepDelay > 0) рейсов. Исключите при этом из рассмотрения аэропорты, из которых было отправлено меньше 1000 рейсов.
+print('Задание 11')
 airport_delays = df[df['DepDelay'] > 0].groupby('Origin').filter(lambda x: len(x) > 1000)
 airport_with_most_delays = airport_delays.groupby('Origin').size().idxmax()
 print(f"Аэропорт с наибольшей долей задержанных рейсов: {airport_with_most_delays}")
+write_results('Задание 11')
+write_results(f"Аэропорт с наибольшей долей задержанных рейсов: {airport_with_most_delays}")
 
 # 12. Считайте выборку из файла при помощи функции pd.read_csv и ответьте на вопросы о пропущенных значениях.
 missing_values = df.isnull().sum().sum()
 rows_with_missing_values = df.isnull().any(axis=1).sum()
 columns_with_missing_values = df.isnull().any(axis=0).sum()
+print('Задание 12')
 print(f"Всего пропущенных значений: {missing_values}")
 print(f"Количество объектов с хотя бы одним пропуском: {rows_with_missing_values}")
 print(f"Количество признаков с хотя бы одним пропущенным значением: {columns_with_missing_values}")
+write_results('Задание 12')
+write_results(f"Всего пропущенных значений: {missing_values}")
+write_results(f"Количество объектов с хотя бы одним пропуском: {rows_with_missing_values}")
+write_results(f"Количество признаков с хотя бы одним пропущенным значением: {columns_with_missing_values}")
 
 # Исключите объекты с пропущенными значениями целевой переменной и целевые переменные равные 0
 df = df.dropna(subset=['DepDelay'])
@@ -137,9 +186,36 @@ for col in ['DepTime', 'CRSDepTime', 'ArrTime', 'CRSArrTime']:
     df[col + '_Minute'] = df[col] % 100
     df = df.drop(columns=[col])
 
-# 14. Изучите описание датасета и исключите признаки, сильно коррелирующие с ответами. Исключите признаки TailNum и Year.
-df = df.drop(columns=['TailNum', 'Year'])
+# Задание 14. Изучите описание датасета и исключите признаки, сильно коррелирующие с ответами. Исключите признаки TailNum и Year.
+# Сначала исключим категориальные переменные
+numeric_df = df.select_dtypes(include=[np.number])
 
+# Посчитаем корреляцию признаков с целевой переменной
+correlation_matrix = numeric_df.corr()
+target_corr = correlation_matrix['DepDelay'].abs().sort_values(ascending=False)
+print('Задание 14')
+# Выведем корреляцию с целевой переменной
+print(target_corr)
+write_results('Задание 14')
+write_results(str(target_corr))
+
+# Определим порог для корреляции
+threshold = 0.5
+
+# Исключим признаки с корреляцией выше порога
+high_corr_features = target_corr[target_corr > threshold].index.tolist()
+print(f"Признаки с высокой корреляцией: {high_corr_features}")
+write_results(f"Признаки с высокой корреляцией: {high_corr_features}")
+
+# Исключим признаки TailNum и Year
+to_drop = high_corr_features + ['TailNum', 'Year']
+
+# Исключаем эти признаки из данных
+df = df.drop(columns=to_drop)
+
+print(f"Обновленные данные после исключения признаков: {df.columns.tolist()}")
+write_results("Признаки с высокой корреляцией с целевой переменной могут содержать избыточную информацию, что может привести к переобучению модели. Исключение таких признаков помогает уменьшить избыточность данных, улучшить обобщающую способность модели и избежать проблем мультиколлинеарности.")
+write_results(f"Обновленные данные после исключения признаков: {df.columns.tolist()}")
 
 # 15. Приведем данные к виду, пригодному для обучения линейных моделей.
 def transform_data(data):
@@ -166,26 +242,36 @@ def transform_data(data):
     return data
 
 
+start_time = time.time()
 X_transformed = transform_data(X)
+end_time = time.time()
 n_features = X_transformed.shape[1]
+
+print('Задание 15')
 print(f"Количество признаков после преобразования: {n_features}")
+write_results('Задание 15')
+write_results(f"Количество признаков после преобразования: {n_features}")
+write_results(f"Время выполнения преобразования данных: {end_time - start_time} секунд")
 
 # 16. Разбейте выборку и вектор целевой переменной на обучение и контроль в отношении 70/30.
 
 # Разделяем данные на обучающую и контрольную выборки в отношении 70/30
 X_train, X_test, y_train, y_test = train_test_split(X_transformed, y, test_size=0.3, random_state=42)
-
+print('Задание 16')
 print(f"Размер обучающей выборки: {X_train.shape[0]}")
 print(f"Размер контрольной выборки: {X_test.shape[0]}")
+write_results('Задание 16')
+write_results(f"Размер обучающей выборки: {X_train.shape[0]}")
+write_results(f"Размер контрольной выборки: {X_test.shape[0]}")
 
 # 17. Обучите линейную регрессию на 1000 объектах из обучающей выборки и выведите значения MSE и R^2
 
-# Проверим и заполним пропущенные значения медианой в обучающей и контрольной выборках
+# Убедимся, что данные масштабированы и не содержат пропущенных значений
 X_train = X_train.fillna(X_train.median())
 X_test = X_test.fillna(X_test.median())
 
 # Создаем и обучаем модель линейной регрессии на первых 1000 объектах обучающей выборки
-linear_model = LinearRegression()
+linear_model = LinearRegression(n_jobs=-1)
 linear_model.fit(X_train[:1000], y_train[:1000])
 
 # Делаем прогнозы на обучающей и контрольной выборках
@@ -197,9 +283,12 @@ train_mse = mean_squared_error(y_train[:1000], y_train_pred)
 test_mse = mean_squared_error(y_test, y_test_pred)
 train_r2 = r2_score(y_train[:1000], y_train_pred)
 test_r2 = r2_score(y_test, y_test_pred)
-
+print('Задание 17')
 print(f"Линейная регрессия:\nTrain MSE: {train_mse}, Test MSE: {test_mse}\nTrain R2: {train_r2}, Test R2: {test_r2}")
 print(f"Коэффициенты модели: {linear_model.coef_}")
+write_results('Задание 17')
+write_results(f"Линейная регрессия:\nTrain MSE: {train_mse}, Test MSE: {test_mse}\nTrain R2: {train_r2}, Test R2: {test_r2}")
+write_results(f"Коэффициенты модели: {linear_model.coef_}")
 
 # 18. Обучите линейные регрессии с L1- и L2-регуляризатором, подобрав лучшее значение параметра регуляризации
 
@@ -211,8 +300,8 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train[:1000])
 X_test_scaled = scaler.transform(X_test)
 
-# Создаем и обучаем модели Lasso и Ridge с кросс-валидацией
-lasso = LassoCV(alphas=alphas, cv=5, max_iter=10000).fit(X_train_scaled, y_train[:1000])
+# Создаем и обучаем модели Lasso и Ridge с кросс-валидацией, используя параллельную обработку
+lasso = LassoCV(alphas=alphas, cv=5, max_iter=10000, tol=1e-3, n_jobs=-1).fit(X_train_scaled, y_train[:1000])
 ridge = RidgeCV(alphas=alphas, cv=5).fit(X_train_scaled, y_train[:1000])
 
 # Делаем прогнозы на обучающей и контрольной выборках для моделей Lasso и Ridge
@@ -231,9 +320,11 @@ train_mse_ridge = mean_squared_error(y_train[:1000], y_train_pred_ridge)
 test_mse_ridge = mean_squared_error(y_test, y_test_pred_ridge)
 train_r2_ridge = r2_score(y_train[:1000], y_train_pred_ridge)
 test_r2_ridge = r2_score(y_test, y_test_pred_ridge)
-
-# Выводим результаты
+print('Задание 18')
 print(
     f"Регрессия Лассо:\nTrain MSE: {train_mse_lasso}, Test MSE: {test_mse_lasso}\nTrain R2: {train_r2_lasso}, Test R2: {test_r2_lasso}")
 print(
     f"Ridge Регрессия:\nTrain MSE: {train_mse_ridge}, Test MSE: {test_mse_ridge}\nTrain R2: {train_r2_ridge}, Test R2: {test_r2_ridge}")
+write_results('Задание 18')
+write_results(f"Регрессия Лассо:\nTrain MSE: {train_mse_lasso}, Test MSE: {test_mse_lasso}\nTrain R2: {train_r2_lasso}, Test R2: {test_r2_lasso}")
+write_results(f"Ridge Регрессия:\nTrain MSE: {train_mse_ridge}, Test MSE: {test_mse_ridge}\nTrain R2: {train_r2_ridge}, Test R2: {test_r2_ridge}")
