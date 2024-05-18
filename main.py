@@ -221,11 +221,13 @@ high_corr_features = target_corr[target_corr > threshold].index.tolist()
 print(f"Признаки с высокой корреляцией: {high_corr_features}")
 write_results(f"Признаки с высокой корреляцией: {high_corr_features}")
 
-# Исключим признаки TailNum и Year
-to_drop = high_corr_features + ['TailNum', 'Year']
+# Исключим признаки TailNum и Year только если они существуют в DataFrame
+for col in ['TailNum', 'Year']:
+    if col in df.columns:
+        high_corr_features.append(col)
 
 # Исключаем эти признаки из данных
-df = df.drop(columns=to_drop)
+df = df.drop(columns=[col for col in high_corr_features if col in df.columns])
 
 print(f"Обновленные данные после исключения признаков: {df.columns.tolist()}")
 write_results("Признаки с высокой корреляцией с целевой переменной могут содержать избыточную информацию, что может привести к переобучению модели. Исключение таких признаков помогает уменьшить избыточность данных, улучшить обобщающую способность модели и избежать проблем мультиколлинеарности.")
